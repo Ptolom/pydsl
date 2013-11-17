@@ -23,7 +23,7 @@ __email__ = "nesaro@gmail.com"
 
 import logging
 LOG = logging.getLogger(__name__)
-from .Parser import TopDownParser, terminal_symbol_reducer
+from .Parser import TopDownParser
 from pydsl.Tree import ParseTree, Sequence
 
 
@@ -47,10 +47,7 @@ class BacktracingErrorRecursiveDescentParser(TopDownParser):
         if isinstance(onlysymbol, TerminalSymbol):
             #Locate every occurrence of word and return a set of results. Follow boundariesrules
             LOG.debug("Iteration: terminalsymbol")
-            result = terminal_symbol_reducer(onlysymbol, data, fixed_start=True)
-            if showerrors and not result:
-                return [ParseTree(0,len(data), onlysymbol , data, onlysymbol, valid = False)]
-            return result
+            return self._reduce_terminal(onlysymbol,data[0], showerrors)
         elif isinstance(onlysymbol, NullSymbol):
             return [ParseTree(0, 0, onlysymbol, "")]
         elif isinstance(onlysymbol, NonTerminalSymbol):
@@ -143,8 +140,7 @@ class BacktracingRecursiveDescentParser(TopDownParser):
         if isinstance(onlysymbol, TerminalSymbol):
             #Locate every occurrence of word and return a set of results. Follow boundariesrules
             LOG.debug("Iteration: terminalsymbol")
-            result = terminal_symbol_reducer(onlysymbol, data, fixed_start=True)
-            return result
+            return self._reduce_terminal(symbol,data[0], showerrors)
         elif isinstance(onlysymbol, NonTerminalSymbol):
             validstack = []
             for alternative in self._productionset.getProductionsBySide([onlysymbol]): #Alternative

@@ -19,7 +19,7 @@
 
 import logging
 LOG = logging.getLogger(__name__)
-from .Parser import TopDownParser, terminal_symbol_reducer
+from .Parser import TopDownParser
 from pydsl.Tree import ParseTree
 
 def filter_by_size(l, size):
@@ -151,10 +151,7 @@ class WeightedParser(TopDownParser):
         if isinstance(onlysymbol, TerminalSymbol):
             #Locate every occurrence of word and return a set of results. Follow boundariesrules
             LOG.debug("Iteration: terminalsymbol")
-            result = terminal_symbol_reducer(onlysymbol, data)
-            if showerrors and not result:
-                return [ParseTree(0,len(data), onlysymbol , data, valid = False)]
-            return result
+            return self._reduce_terminal(onlysymbol, data[0], showerrors)
         elif isinstance(onlysymbol, NonTerminalSymbol):
             result = []
             for alternative in self._productionset.getProductionsBySide(onlysymbol):
