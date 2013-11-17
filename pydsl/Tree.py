@@ -83,7 +83,7 @@ class Sequence:
 
     def append(self, left, right, content, check_position=True):
         if left > right:
-            raise Exception
+            raise ValueError('Attempted to add negative length alement')
         if check_position == True and left:
             if left not in self.current_right:
                 raise ValueError("Unable to add element")
@@ -93,8 +93,10 @@ class Sequence:
         """Returns list"""
         valid_sets = [[x] for x in self.possible_items if x['left'] == 0]
         change = True
-        while change:
+        niter = 200
+        while change and niter > 0:
             change = False
+            niter -=1
             for possible in self.possible_items:
                 for current_valid in valid_sets[:]:
                     if possible['left'] == current_valid[-1]['right']:
@@ -102,6 +104,8 @@ class Sequence:
                             if possible['content'] != current_valid[-1]['content']:
                                 valid_sets.append(current_valid + [possible])
                                 change = True
+        if not niter:
+            raise Exception('too many iterations')
         return valid_sets
 
     def right_limit_list(self):
