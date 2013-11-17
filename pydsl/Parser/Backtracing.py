@@ -31,6 +31,8 @@ class BacktracingErrorRecursiveDescentParser(TopDownParser):
     """Recursive descent parser implementation. Backtracing. Null support. Error support"""
     def get_trees(self, data, showerrors = False): # -> list:
         """ returns a list of trees with valid guesses """
+        from pydsl.Lex import lex
+        tokenized = lex(self._productionset.alphabet(), data)
         result = self.__recursive_parser(self._productionset.initialsymbol, data, self._productionset.main_production, showerrors)
         finalresult = []
         for eresult in result:
