@@ -102,7 +102,7 @@ class AlphabetLexer(Lexer):
         raise NotImplementedError
 
 
-class ChoicesBruteForceLexer(ChoicesLexer):
+class ChoicesBruteForceLexer(AlphabetLexer):
 
     """Attempts to generate the smallest token sequence by evaluating every accepted sequence"""
 
