@@ -16,8 +16,10 @@
 #along with pydsl.  If not, see <http://www.gnu.org/licenses/>.
 
 """Test wrapper"""
+from pydsl.Config import GLOBALCONFIG
 from pydsl.Parser.Parser import parser_factory
 from pydsl.Validate import validator_factory
+from pydsl.Lex import lex
 
 __author__ = "Nestor Arocha"
 __copyright__ = "Copyright 2008-2013, Nestor Arocha"
@@ -32,8 +34,11 @@ class TestValidate(unittest.TestCase):
 
     def testBasic(self):
         parser = parser_factory('Date', 'descent')
-        self.assertFalse(parser.get_trees("11/11/ab", True)[0].valid)
-        self.assertTrue(parser.get_trees("11/11/2011", True)[0].valid)
+        tokenized = [x[0] for x in lex(GLOBALCONFIG.load('Date').alphabet, "11/11/2011")]
+        self.assertTrue(parser.get_trees(tokenized, True)[0].valid)
+        tokenized = [x[0] for x in lex(GLOBALCONFIG.load('Date').alphabet, "11/11//")]
+        self.assertFalse(parser.get_trees(tokenized, True)[0].valid)
+        self.assertRaises(Exception, lex, GLOBALCONFIG.load('Date').alphabet, "11/11/ab")
 
     def testValidateLoad(self):
         from pydsl.contrib.bnfgrammar import productionset0
