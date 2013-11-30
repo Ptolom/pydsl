@@ -103,9 +103,8 @@ class Sequence:
                 for current_valid in valid_sets[:]:
                     if possible['left'] == current_valid[-1]['right']:
                         if current_valid + [possible] not in valid_sets:
-                            if possible['content'] != current_valid[-1]['content']:
-                                valid_sets.append(current_valid + [possible])
-                                change = True
+                            valid_sets.append(current_valid + [possible])
+                            change = True
         if not niter:
             raise Exception('too many iterations')
         return valid_sets
