@@ -101,7 +101,7 @@ class AlphabetLexer(Lexer):
         raise NotImplementedError
 
 
-class ChoicesBruteForceLexer(AlphabetLexer):
+class ChoiceBruteForceLexer(AlphabetLexer):
 
     """Attempts to generate the smallest token sequence by evaluating every accepted sequence"""
 
@@ -173,7 +173,7 @@ def lexer_factory(alphabet):
     if isinstance(alphabet, str):
         alphabet = load(alphabet)
     if isinstance(alphabet, Choice):
-        return ChoicesBruteForceLexer(alphabet)
+        return ChoiceBruteForceLexer(alphabet)
     elif isinstance(alphabet, Encoding):
         return EncodingLexer(alphabet)
     else:
