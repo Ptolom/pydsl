@@ -110,7 +110,7 @@ class WeightedParser(TopDownParser):
     """Weighted Parser class"""
     def get_trees(self, data, showerrors = False):
         from pydsl.Lex import lex
-        tokenized = lex(self._productionset.alphabet(), data)
+        tokenized = lex(self._productionset.alphabet, data)
         result = self.__recursive_parser(self._productionset.initialsymbol, data, self._productionset.main_production, showerrors)
         finalresult = []
         for eresult in result:
