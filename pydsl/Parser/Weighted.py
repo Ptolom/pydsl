@@ -109,6 +109,10 @@ def locate_heavier_symbol(symbols):
 class WeightedParser(TopDownParser):
     """Weighted Parser class"""
     def get_trees(self, data, showerrors = False):
+        from pydsl.Check import check
+        for element in data:
+            if not check(self._productionset.alphabet, element):
+                raise ValueError("Unknown element %s" % element)
         result = self.__recursive_parser(self._productionset.initialsymbol, data, self._productionset.main_production, showerrors)
         finalresult = []
         for eresult in result:
