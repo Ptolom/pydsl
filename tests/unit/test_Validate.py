@@ -42,12 +42,10 @@ class TestValidate(unittest.TestCase):
 
     def testValidateLoad(self):
         from pydsl.contrib.bnfgrammar import productionset0
+        from pydsl.Grammar import String
 
         validator = validator_factory(productionset0)
-        self.assertTrue(validator("input"))
-
-    def testListInput(self):
-        pass
+        self.assertTrue(validator([String("S"), String("S")]))
 
     def testEmptyInput(self):
         pass
