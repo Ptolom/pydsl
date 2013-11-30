@@ -25,14 +25,16 @@ import logging
 LOG = logging.getLogger(__name__)
 from .Parser import TopDownParser
 from pydsl.Tree import ParseTree, Sequence
+from pydsl.Check import check
 
 
 class BacktracingErrorRecursiveDescentParser(TopDownParser):
     """Recursive descent parser implementation. Backtracing. Null support. Error support"""
     def get_trees(self, data, showerrors = False): # -> list:
         """ returns a list of trees with valid guesses """
-        from pydsl.Lex import lex
-        tokenized = lex(self._productionset.alphabet(), data)
+        for element in data:
+            if not check(self._productionset.alphabet,element):
+                raise ValueError("Unknown element %s" % element)
         result = self.__recursive_parser(self._productionset.initialsymbol, data, self._productionset.main_production, showerrors)
         finalresult = []
         for eresult in result:
