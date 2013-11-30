@@ -83,24 +83,15 @@ class BNFGrammar(Grammar):
 
     def alphabet(self):
         from pydsl.Grammar.Alphabet import Choice
-        return Choice([x.gd for x in self.terminalsymbollist])
+        return Choice([x.gd for x in self.terminal_symbols])
 
     @property
     def productions(self):
         return [x for x in self.fulllist if isinstance(x, Production)]
 
     @property
-    def terminalsymbollist(self):
+    def terminal_symbols(self):
         return [x for x in self.fulllist if isinstance(x, TerminalSymbol)]
-
-    @property
-    def symbollist(self):
-        result = []
-        for x in self.productions:
-            for y in x.leftside + x.rightside:
-                if y not in result:
-                    result.append(y)
-        return result
 
     @property
     def first(self):
@@ -155,16 +146,6 @@ class BNFGrammar(Grammar):
 
         return result
 
-    @property
-    def left_recursive(self):# -> bool:
-        """Tests if exists left recursion"""
-        raise NotImplementedError
-
-    @property
-    def right_recursive(self):# -> bool:
-        """Tests if exists right recursion"""
-        raise NotImplementedError
-
     def __eq__(self, other):
         if not isinstance(other, BNFGrammar):
             return False
@@ -216,11 +197,8 @@ class BNFGrammar(Grammar):
             for symbol in rule.leftside + rule.rightside:
                 if symbol not in symbollist:
                     symbollist.append(symbol)
-        symbollist += self.terminalsymbollist
+        symbollist += self.terminal_symbols
         return symbollist
-
-    def getProductionIndex(self, rule):
-        return self.productions.index(rule)
 
     def __str__(self):
         return str(list(map(str, self.productions)))
