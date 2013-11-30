@@ -49,7 +49,8 @@ class TestHTMLGrammars(unittest.TestCase):
         lexed = [x[0] for x in lex(productionrulesetlogical.alphabet, "<table><tr><td>1</td></tr></table>")]
         result = parser.get_trees(lexed)
         self.assertTrue(result)
-        result = parser.get_trees("<trble><tr><td>1</td></tr></table>")
+        lexed = [x[0] for x in lex(productionrulesetlogical.alphabet, "<table><td>1</td></tr></table>")]
+        result = parser.get_trees(lexed)
         self.assertFalse(result)
 
 
