@@ -45,7 +45,9 @@ class TestHTMLGrammars(unittest.TestCase):
     def testHTMLTable(self):
         productionrulesetlogical = load_bnf_file("pydsl/contrib/grammar/TrueHTMLTable.bnf")
         parser = BacktracingErrorRecursiveDescentParser(productionrulesetlogical)
-        result = parser.get_trees("<table><tr><td>1</td></tr></table>")
+        from pydsl.Lex import lex
+        lexed = [x[0] for x in lex(productionrulesetlogical.alphabet, "<table><tr><td>1</td></tr></table>")]
+        result = parser.get_trees(lexed)
         self.assertTrue(result)
         result = parser.get_trees("<trble><tr><td>1</td></tr></table>")
         self.assertFalse(result)
