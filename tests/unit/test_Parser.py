@@ -140,7 +140,9 @@ class TestWeightedParser(unittest.TestCase):
 
     def testWeightedParserNullBad(self):
         parser = WeightedParser(productionset2)
-        result = parser(string4)
+        from pydsl.Lex import lex
+        lexed_string4 = lex(productionset2.alphabet, string4)
+        result = parser(lexed_string4)
         self.assertFalse(result)
 
     @unittest.skip
