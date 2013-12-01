@@ -58,5 +58,8 @@ class TestLogGrammar(unittest.TestCase):
     def testLogLine(self):
         grammar = load("logline")
         checker = checker_factory(grammar)
-        self.assertTrue(checker.check("1.2.3.4 - - [1/1/2003:11:11:11 +2] \"GET\" 1 1 \"referer\" \"useragent\""))
+        original_string = "1.2.3.4 - - [1/1/2003:11:11:11 +2] \"GET\" 1 1 \"referer\" \"useragent\""
+        from pydsl.Lex import lex
+        tokenized = [x[0] for x in lex(grammar.alphabet, original_string)]
+        self.assertTrue(checker.check(tokenized))
         self.assertFalse(checker.check("1.2.3.4 - - [1/1/2003:11:11:11 +2] \"GOT\" 1 1 \"referer\" \"useragent\""))
