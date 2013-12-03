@@ -128,9 +128,6 @@ class ChoiceBruteForceLexer(AlphabetLexer):
             raise Exception("Nothing consumed")
         for left, right, gd in valid_alternatives:
             string = self.string[left:right]
-            if isinstance(string, list):
-                from pydsl.Grammar import String
-                string = String("".join(str(x) for x in string))
             tree.append(left, right, string, gd, check_position=False)
 
         right_length_seq = []

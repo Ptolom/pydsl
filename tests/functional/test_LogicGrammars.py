@@ -10,6 +10,7 @@ import unittest
 from pydsl.Parser.Backtracing import BacktracingErrorRecursiveDescentParser
 from pydsl.File.BNF import load_bnf_file
 from pydsl.Config import load
+from pydsl.Lex import lex
 
 
 class TestLogicGrammars(unittest.TestCase):
@@ -22,7 +23,9 @@ class TestLogicGrammars(unittest.TestCase):
         #import pdb
         #pdb.set_trace()
         parser = BacktracingErrorRecursiveDescentParser(productionrulesetlogical)
-        result = parser.get_trees(self.tokelist5)
+        tokens = [x[0] for x in lex(load('TrueFalse').alphabet, self.tokelist5)]
+        tokens = [x[0] for x in lex(productionrulesetlogical.alphabet, tokens)]
+        result = parser.get_trees(tokens)
         self.assertTrue(result)
 
     def testTrueFalse(self):
