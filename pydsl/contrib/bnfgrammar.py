@@ -55,5 +55,6 @@ productionsetcr = strlist_to_production_set(centerrecursive)
 string1 = "S:a"
 string2 = "S:"
 string3 = "AB"
-string4 = "ACB"
+string4 = "AAB"
+string5 = "ACB"
 dots = "....."

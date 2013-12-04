@@ -63,7 +63,7 @@ class TestBacktracingRecursiveDescentParser(unittest.TestCase):
     def testRecursiveDescentParserNullBad(self):
         descentparser = BacktracingErrorRecursiveDescentParser(productionset2)
         from pydsl.Lex import lex
-        lexed_string4 = lex(productionset2.alphabet, string4)
+        lexed_string4 = [x[0] for x in lex(productionset2.alphabet, string4)]
         result = descentparser(lexed_string4)
         self.assertFalse(result)
 

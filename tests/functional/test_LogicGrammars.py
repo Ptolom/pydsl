@@ -31,13 +31,15 @@ class TestLogicGrammars(unittest.TestCase):
     def testTrueFalse(self):
         productionrulesetlogical = load_bnf_file("pydsl/contrib/grammar/TrueFalse.bnf")
         parser = BacktracingErrorRecursiveDescentParser(productionrulesetlogical)
-        result = parser.get_trees(self.tokelist5)
+        tokens = [x[0] for x in lex(productionrulesetlogical.alphabet, self.tokelist5)]
+        result = parser.get_trees(tokens)
         self.assertTrue(result)
 
     def testLogicalExpression(self):
         productionrulesetlogical = load_bnf_file("pydsl/contrib/grammar/LogicalExpression.bnf")
         parser = BacktracingErrorRecursiveDescentParser(productionrulesetlogical)
-        result = parser.get_trees("True&&False")
+        tokens = [x[0] for x in lex(productionrulesetlogical.alphabet, "True&&False")]
+        result = parser.get_trees(tokens)
         self.assertTrue(result)
         result = parser.get_trees("True&|False")
         self.assertFalse(result)

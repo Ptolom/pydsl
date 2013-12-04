@@ -100,7 +100,7 @@ class TestChoiceLexer(unittest.TestCase):
         self.assertTrue(checker([a,b]))
         second_level_alphabet = Choice([first_level, first_levelb], base_alphabet=first_level+first_levelb)
         lexer = lexer_factory(second_level_alphabet)
-        self.assertListEqual(lexer([a,b]), [(a,first_level),(b,first_level)])
+        self.assertListEqual(lexer("ab"), [("a",first_level),("b",first_level)])
 
 class TestPythonLexer(unittest.TestCase):
     def test_Concept(self):
