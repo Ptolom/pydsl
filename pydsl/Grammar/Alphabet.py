@@ -53,8 +53,8 @@ class Choice(Alphabet, list):
         for x in self:
             if not isinstance(x, Grammar):
                 raise TypeError("Expected Grammar, Got %s:%s" % (x.__class__.__name__,x))
-            if x.base_alphabet not in base_alphabet_list:
-                base_alphabet_list.append(x.base_alphabet)
+            if x.alphabet not in base_alphabet_list:
+                base_alphabet_list.append(x.alphabet)
         if len(base_alphabet_list) != 1:
             raise ValueError('Different base alphabets from members')
 
