@@ -54,6 +54,9 @@ class Choice(Alphabet, list):
         if len(base_alphabet_list) != 1:
             raise ValueError('Different base alphabets from members')
 
+    def __str__(self):
+        return str([str(x) for x in self])
+
     def __add__(self, other):
         return Choice(list.__add__(self,other))
 
