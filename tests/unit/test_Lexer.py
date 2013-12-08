@@ -38,11 +38,11 @@ class TestEncodingLexer(unittest.TestCase):
     def testencodingLexer(self):
         lexer = EncodingLexer('utf8')
         result = list(lexer("abcde"))
-        print([str(x) for x in result])
 
 class TestChoiceLexer(unittest.TestCase):
     def setUp(self):
         load_default_memory()
+        self.maxDiff = None
 
     @unittest.skip("Raises an exception")
     def testEmptyInput(self):

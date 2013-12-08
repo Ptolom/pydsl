@@ -42,7 +42,7 @@ class TestAlphabet(unittest.TestCase):
     def testLexer(self):
         lexer = lexer_factory(self.alphabet)
         self.assertListEqual(lexer("1234"), [("1234", self.integer)])
-        self.assertListEqual(lexer("123411/11/2001"), [("1234", self.integer),("11/11/2001", self.date)])
+        self.assertListEqual(lexer(["123411/11/2001"]), [("1234", self.integer),("11/11/2001", self.date)])
 
     def testEncoding(self):
         alphabet = Encoding('ascii')
