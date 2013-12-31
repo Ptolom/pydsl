@@ -96,18 +96,22 @@ class ChoiceLexer(object):
         raise NotImplementedError
 
 
-class ChoiceBruteForceLexer(AlphabetLexer):
+class ChoiceBruteForceLexer(object):
 
     """Attempts to generate the smallest token sequence by evaluating every accepted sequence"""
 
     def __init__(self, alphabet):
-        AlphabetLexer.__init__(self)
         self.alphabet = alphabet
 
     @property
     def current(self):
         """Returns the element under the cursor until the end of the string"""
         return self.string[self.index:]
+
+    def __call__(self, string, include_gd=True):  # -> "TokenList":
+        """Tokenizes input, generating a list of tokens"""
+        self.string = string
+        return [x for x in self.nextToken(include_gd)]
 
     def nextToken(self, include_gd=False):
         from pydsl.Tree import Sequence

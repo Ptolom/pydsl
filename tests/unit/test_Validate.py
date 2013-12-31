@@ -16,7 +16,6 @@
 #along with pydsl.  If not, see <http://www.gnu.org/licenses/>.
 
 """Test wrapper"""
-from pydsl.Config import GLOBALCONFIG
 from pydsl.Parser.Parser import parser_factory
 from pydsl.Validate import validator_factory
 from pydsl.Lex import lex
