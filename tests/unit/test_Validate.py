@@ -26,19 +26,20 @@ __copyright__ = "Copyright 2008-2013, Nestor Arocha"
 __email__ = "nesaro@gmail.com"
 
 import unittest
+from pydsl.File.BNF import load_bnf_file
+from pydsl.Grammar import RegularExpression
+from pydsl.File.Python import load_python_file
 
 class TestValidate(unittest.TestCase):
-    def setUp(self):
-        from pydsl.Config import load_default_memory
-        load_default_memory()
-
     def testBasic(self):
-        parser = parser_factory('Date', 'descent')
-        tokenized = [x[0] for x in lex(GLOBALCONFIG.load('Date').alphabet, "11/11/2011")]
+        integer = RegularExpression("^[0123456789]*$")
+        date = load_bnf_file("pydsl/contrib/grammar/Date.bnf", {'integer':integer, 'DayOfMonth':load_python_file('pydsl/contrib/grammar/DayOfMonth.py')})
+        parser = parser_factory(date, 'descent')
+        tokenized = [x[0] for x in lex(date.alphabet, "11/11/2011")]
         self.assertTrue(parser.get_trees(tokenized, True)[0].valid)
-        tokenized = [x[0] for x in lex(GLOBALCONFIG.load('Date').alphabet, "11/11//")]
+        tokenized = [x[0] for x in lex(date.alphabet, "11/11//")]
         self.assertFalse(parser.get_trees(tokenized, True)[0].valid)
-        self.assertRaises(Exception, lex, GLOBALCONFIG.load('Date').alphabet, "11/11/ab")
+        self.assertRaises(Exception, lex, date.alphabet, "11/11/ab")
 
     def testValidateLoad(self):
         from pydsl.contrib.bnfgrammar import productionset0
