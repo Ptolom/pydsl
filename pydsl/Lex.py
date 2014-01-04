@@ -45,8 +45,8 @@ class EncodingLexer(object):
             for x in buffer:
                 target.send(x)
 
-class AlphabetChainLexer(object):
-    def __init__(self, alphabetchain):
+class GeneralLexer(object):
+    def __init__(self, alphabet, base):
         self.alphabetchain = alphabetchain
 
     def __call__(self, data, include_gd=False):
@@ -183,21 +183,21 @@ class GrammarCollectionLexer(object):
     def base_alphabet(self):
         return common_ancestor(self.alphabet)
 
-def lexer_factory(alphabet):
+def lexer_factory(alphabet, base = None):
     from pydsl.Grammar.Alphabet import Choice, AlphabetChain, GrammarCollection
-    if isinstance(alphabet, Choice):
+    if isinstance(alphabet, Choice) and alphabet.alphabet == base:
         return ChoiceBruteForceLexer(alphabet)
     elif isinstance(alphabet, Encoding):
+        if base is not None:
+            raise ValueError
         return EncodingLexer(alphabet)
-    elif isinstance(alphabet, AlphabetChain):
-        return AlphabetChainLexer(alphabet)
-    elif isinstance(alphabet, GrammarCollection):
+    elif isinstance(alphabet, GrammarCollection) and base == common_ancestor(alphabet):
         return GrammarCollectionLexer(alphabet)
     else:
-        raise ValueError(alphabet)
+        return GeneralLexer(alphabet, base)
 
-def lex(definition, data):
-    return lexer_factory(definition)(data)
+def lex(alphabet, base, data):
+    return lexer_factory(alphabet, base)(data)
 
 
 def common_ancestor(alphabet):
