@@ -34,16 +34,17 @@ class TestAlphabet(unittest.TestCase):
     def setUp(self):
         self.integer = RegularExpression("^[0123456789]*$")
         self.date = load_bnf_file("pydsl/contrib/grammar/Date.bnf", {'integer':self.integer, 'DayOfMonth':load_python_file('pydsl/contrib/grammar/DayOfMonth.py')})
-        self.alphabet = Choice([self.integer,self.date])
 
     def testChecker(self):
-        checker = checker_factory(self.alphabet)
+        alphabet = Choice([self.integer,self.date])
+        checker = checker_factory(alphabet)
         self.assertTrue(checker.check("1234"))
         self.assertTrue(checker.check("11/11/1991"))
         self.assertFalse(checker.check("bcdf"))
 
     def testLexer(self):
-        lexer = lexer_factory(self.alphabet)
+        alphabet = Choice([self.integer,self.date])
+        lexer = lexer_factory(alphabet)
         self.assertListEqual(lexer("1234"), [("1234", self.integer)])
         self.assertListEqual(lexer(["123411/11/2001"]), [("1234", self.integer),("11/11/2001", self.date)])
 
@@ -64,3 +65,4 @@ class TestAlphabet(unittest.TestCase):
         self.assertEqual(a1.first, ac.first)
         lexer = lexer_factory(ac)
         self.assertListEqual([x[1] for x in lexer("abac", include_gd=True)], [ab_sequence , ac_sequence])
+

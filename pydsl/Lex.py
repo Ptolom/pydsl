@@ -78,22 +78,41 @@ class ChoiceLexer(object):
         self.string = string
         self.index = 0
 
-    def consume(self):
-        self.index += 1
-
-    def match(self, char):
-        if self.current != char:
-            raise Exception("%s doesn't match %s" % (self.current, char))
-        self.consume()
-
     def __call__(self, string, include_gd=True):  # -> "TokenList":
         """Tokenizes input, generating a list of tokens"""
-        self.string = string
-        return [x for x in self.nextToken(include_gd)]
+        self.load(string)
+        result = []
+        while True:
+            try:
+                result.append(self.nextToken(include_gd))
+            except:
+                break
+        return result
 
     def lexer_generator(self):
         """generator version of the lexer, yields a new token as soon as possible"""
         raise NotImplementedError
+
+    def nextToken(self, include_gd=False):
+        from pydsl.Tree import Sequence
+        best_right = 0
+        best_gd = None
+        for gd in self.alphabet:
+            checker = checker_factory(gd)
+            left = self.index
+            for right in range(left +1, len(self.string) +1):
+                if checker.check(self.string[left:right]): #TODO: Use match
+                    if right > best_right:
+                        best_right = right
+                        best_gd = gd
+        if not best_gd:
+            raise Exception("Nothing consumed")
+        if include_gd:
+            result = self.string[self.index:best_right], best_gd
+        else:
+            result = self.string[self.index:best_right]
+        self.index = right
+        return result
 
 
 class ChoiceBruteForceLexer(object):

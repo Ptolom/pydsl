@@ -39,7 +39,7 @@ class TestEncodingLexer(unittest.TestCase):
         lexer = EncodingLexer('utf8')
         result = list(lexer("abcde"))
 
-class TestChoiceLexer(unittest.TestCase):
+class TestBruteForceChoiceLexer(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
 
@@ -100,6 +100,17 @@ class TestChoiceLexer(unittest.TestCase):
         second_level_alphabet = Choice([first_level, first_levelb], base_alphabet=first_level+first_levelb)
         lexer = lexer_factory(second_level_alphabet)
         self.assertListEqual(lexer("ab"), [("a",first_level),("b",first_level)])
+
+
+class TestChoiceLexer(unittest.TestCase):
+    def setUp(self):
+        self.maxDiff = None
+
+    def testSimpleChoiceLexer(self):
+        a1 = Choice([String('a'), String('b'), String('c')])
+        from pydsl.Lex import ChoiceLexer
+        lexer = ChoiceLexer(a1)
+        self.assertListEqual(lexer("abc"), [("a", String('a'))])
 
 class TestPythonLexer(unittest.TestCase):
     def test_Concept(self):
