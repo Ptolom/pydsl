@@ -77,8 +77,8 @@ class BNFGrammar(Grammar):
 
     @property
     def alphabet(self):
-        from pydsl.Grammar.Alphabet import Choice
-        return Choice([x.gd for x in self.terminal_symbols])
+        from pydsl.Grammar.Alphabet import GrammarCollection
+        return GrammarCollection([x.gd for x in self.terminal_symbols])
 
     @property
     def productions(self):

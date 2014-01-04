@@ -39,6 +39,21 @@ class AlphabetChain(Alphabet, list):
         list.__init__(self, alphabet_list)
         Alphabet.__init__(self)
 
+class GrammarCollection(Alphabet, list):
+    """Uses a list of grammar definitions"""
+    def __init__(self, grammarlist):
+        Alphabet.__init__(self)
+        list.__init__(self, grammarlist)
+        for x in self:
+            if not isinstance(x, Grammar):
+                raise TypeError("Expected Grammar, Got %s:%s" % (x.__class__.__name__,x))
+
+    def __str__(self):
+        return str([str(x) for x in self])
+
+    def __add__(self, other):
+        return GrammarCollection(list.__add__(self,other))
+
 class Choice(Alphabet, Grammar, list):
     """Uses a list of grammar definitions with common base alphabets"""
     def __init__(self, grammarlist):
