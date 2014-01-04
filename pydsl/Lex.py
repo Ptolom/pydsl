@@ -179,3 +179,28 @@ def lexer_factory(alphabet):
 
 def lex(definition, data):
     return lexer_factory(definition)(data)
+
+
+def common_ancestor(alphabet):
+    """Discovers the alphabet common to every element in the input"""
+    expanded_alphabet_list = []
+    for gd in alphabet:
+        expanded_alphabet_list_entry = []
+        from pydsl.Grammar.Alphabet import Alphabet
+        if isinstance(gd, Alphabet):
+            expanded_alphabet_list_entry.append(gd)
+        current_alphabet = gd.alphabet
+        while current_alphabet is not None:
+            expanded_alphabet_list_entry.append(current_alphabet)
+            current_alphabet = current_alphabet.alphabet
+        expanded_alphabet_list.append(expanded_alphabet_list_entry)
+    flat_alphabet_list = []
+    for entry in expanded_alphabet_list:
+        for alphabet in entry:
+            if alphabet not in flat_alphabet_list:
+                flat_alphabet_list.append(alphabet)
+    common_alphabets = [x for x in flat_alphabet_list if all((x in y for y in expanded_alphabet_list))]
+    if len(common_alphabets) != 1:
+        raise NotImplementedError
+    return common_alphabets[0]
+

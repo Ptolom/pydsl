@@ -20,6 +20,8 @@ __copyright__ = "Copyright 2008-2013, Nestor Arocha"
 __email__ = "nesaro@gmail.com"
 
 from pydsl.Grammar.Definition import Grammar
+import logging
+LOG=logging.getLogger(__name__)
 
 class Alphabet(Grammar):
     """Defines a set of valid elements"""
@@ -54,7 +56,7 @@ class Choice(Alphabet, list):
             if x.alphabet not in base_alphabet_list:
                 base_alphabet_list.append(x.alphabet)
         if len(base_alphabet_list) != 1:
-            raise ValueError('Different base alphabets from members')
+            LOG.warning('Different base alphabets from members %s' % base_alphabet_list)
 
     def __str__(self):
         return str([str(x) for x in self])

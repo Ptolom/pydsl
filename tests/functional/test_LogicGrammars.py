@@ -23,6 +23,9 @@ class TestLogicGrammars(unittest.TestCase):
         productionrulesetlogical = load_bnf_file("pydsl/contrib/grammar/LogicalExpression.bnf", repository)
         parser = BacktracingErrorRecursiveDescentParser(productionrulesetlogical)
         tokens = [x[0] for x in lex(repository['TrueFalse'].alphabet, self.tokelist5)]
+        from pydsl.Lex import common_ancestor
+        from pydsl.Grammar.Alphabet import Encoding
+        self.assertEqual(common_ancestor(productionrulesetlogical.alphabet), Encoding('ascii'))
         tokens = [x[0] for x in lex(productionrulesetlogical.alphabet, tokens)]
         result = parser.get_trees(tokens)
         self.assertTrue(result)
