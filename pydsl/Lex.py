@@ -156,6 +156,14 @@ class ChoiceBruteForceLexer(object):
                         target.send(currentstr)
 
 
+class GrammarCollectionLexer(object):
+    def __init__(self, alphabet):
+        self.alphabet = alphabet
+
+    @property
+    def base_alphabet(self):
+        return common_ancestor(self.alphabet)
+
 class PythonLexer(object):
     """A python function based lexer"""
     def __init__(self, function):
@@ -167,13 +175,15 @@ class PythonLexer(object):
 
 
 def lexer_factory(alphabet):
-    from pydsl.Grammar.Alphabet import Choice, AlphabetChain
+    from pydsl.Grammar.Alphabet import Choice, AlphabetChain, GrammarCollection
     if isinstance(alphabet, Choice):
         return ChoiceBruteForceLexer(alphabet)
     elif isinstance(alphabet, Encoding):
         return EncodingLexer(alphabet)
     elif isinstance(alphabet, AlphabetChain):
         return AlphabetChainLexer(alphabet)
+    elif isinstance(alphabet, GrammarCollection):
+        return GrammarCollectionLexer(alphabet)
     else:
         raise ValueError(alphabet)
 
