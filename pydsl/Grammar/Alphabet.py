@@ -23,7 +23,7 @@ from pydsl.Grammar.Definition import Grammar
 import logging
 LOG=logging.getLogger(__name__)
 
-class Alphabet(Grammar):
+class Alphabet(object):
     """Defines a set of valid elements"""
     @property
     def minsize(self):
@@ -33,16 +33,18 @@ class Alphabet(Grammar):
     def maxsize(self):
         return 1
 
+
 class AlphabetChain(Alphabet, list):
     def __init__(self, alphabet_list):
         list.__init__(self, alphabet_list)
-        Alphabet.__init__(self, base_alphabet = self[0].alphabet)
+        Alphabet.__init__(self)
 
 
-class Choice(Alphabet, list):
+class Choice(Alphabet, Grammar, list):
     """Uses a list of grammar definitions"""
     def __init__(self, grammarlist, base_alphabet = None):
-        Alphabet.__init__(self, base_alphabet)
+        Grammar.__init__(self, base_alphabet)
+        Alphabet.__init__(self)
         if not grammarlist:
             raise ValueError
         result = []
@@ -69,10 +71,6 @@ class Encoding(Alphabet):
     def __init__(self, encoding):
         Alphabet.__init__(self)
         self.encoding = encoding
-
-    @property
-    def alphabet(self):
-        return None
 
     def __eq__(self, other):
         try:
