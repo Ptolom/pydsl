@@ -183,16 +183,6 @@ class GrammarCollectionLexer(object):
     def base_alphabet(self):
         return common_ancestor(self.alphabet)
 
-class PythonLexer(object):
-    """A python function based lexer"""
-    def __init__(self, function):
-        self._function = function
-
-    def __call__(self, *args, **kwargs):
-        result = self._function(*args, **kwargs)
-        return result
-
-
 def lexer_factory(alphabet):
     from pydsl.Grammar.Alphabet import Choice, AlphabetChain, GrammarCollection
     if isinstance(alphabet, Choice):
