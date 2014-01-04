@@ -39,18 +39,11 @@ class AlphabetChain(Alphabet, list):
         list.__init__(self, alphabet_list)
         Alphabet.__init__(self)
 
-
 class Choice(Alphabet, Grammar, list):
-    """Uses a list of grammar definitions"""
-    def __init__(self, grammarlist, base_alphabet = None):
-        Grammar.__init__(self, base_alphabet)
+    """Uses a list of grammar definitions with common base alphabets"""
+    def __init__(self, grammarlist):
         Alphabet.__init__(self)
-        if not grammarlist:
-            raise ValueError
-        result = []
-        for x in grammarlist:
-            result.append(x)
-        list.__init__(self, result)
+        list.__init__(self, grammarlist)
         base_alphabet_list = []
         for x in self:
             if not isinstance(x, Grammar):
@@ -59,6 +52,7 @@ class Choice(Alphabet, Grammar, list):
                 base_alphabet_list.append(x.alphabet)
         if len(base_alphabet_list) != 1:
             raise ValueError('Different base alphabets from members %s' % base_alphabet_list)
+        Grammar.__init__(self, base_alphabet_list[0])
 
     def __str__(self):
         return str([str(x) for x in self])
