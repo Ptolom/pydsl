@@ -11,6 +11,7 @@ from pydsl.Parser.Backtracing import BacktracingErrorRecursiveDescentParser
 from pydsl.File.BNF import load_bnf_file
 from pydsl.Lex import lex
 from pydsl.Grammar import RegularExpression
+from pydsl.Grammar.Alphabet import Encoding
 
 
 class TestLogicGrammars(unittest.TestCase):
@@ -24,7 +25,6 @@ class TestLogicGrammars(unittest.TestCase):
         parser = BacktracingErrorRecursiveDescentParser(productionrulesetlogical)
         tokens = [x[0] for x in lex(repository['TrueFalse'].alphabet, self.tokelist5)]
         from pydsl.Lex import common_ancestor
-        from pydsl.Grammar.Alphabet import Encoding
         self.assertEqual(common_ancestor(productionrulesetlogical.alphabet), Encoding('ascii'))
         tokens = [x[0] for x in lex(productionrulesetlogical.alphabet, tokens)]
         result = parser.get_trees(tokens)
@@ -54,11 +54,11 @@ class TestHTMLGrammars(unittest.TestCase):
         repository = {'integer':RegularExpression("^[0123456789]*$")}
         productionrulesetlogical = load_bnf_file("pydsl/contrib/grammar/TrueHTMLTable.bnf", repository)
         parser = BacktracingErrorRecursiveDescentParser(productionrulesetlogical)
-        from pydsl.Lex import lex
-        lexed = [x[0] for x in lex(productionrulesetlogical.alphabet, "<table><tr><td>1</td></tr></table>")]
+        ascii_encoding = Encoding("ascii")
+        lexed = [x[0] for x in lex(productionrulesetlogical.alphabet, ascii_encoding, "<table><tr><td>1</td></tr></table>")]
         result = parser.get_trees(lexed)
         self.assertTrue(result)
-        lexed = [x[0] for x in lex(productionrulesetlogical.alphabet, "<table><td>1</td></tr></table>")]
+        lexed = [x[0] for x in lex(productionrulesetlogical.alphabet, ascii_encoding, "<table><td>1</td></tr></table>")]
         result = parser.get_trees(lexed)
         self.assertFalse(result)
 
