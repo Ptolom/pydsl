@@ -210,7 +210,7 @@ def common_ancestor(alphabet):
         current_alphabet = gd.alphabet
         while current_alphabet is not None:
             expanded_alphabet_list_entry.append(current_alphabet)
-            current_alphabet = current_alphabet.alphabet
+            current_alphabet = getattr(current_alphabet,"alphabet", None)
         expanded_alphabet_list.append(expanded_alphabet_list_entry)
     flat_alphabet_list = []
     for entry in expanded_alphabet_list:
