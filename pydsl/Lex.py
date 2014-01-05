@@ -23,6 +23,7 @@ __email__ = "nesaro@gmail.com"
 
 from pydsl.Grammar.Alphabet import Encoding
 from pydsl.Check import checker_factory
+from pydsl.Grammar.Alphabet import Choice, GrammarCollection
 
 
 class EncodingLexer(object):
@@ -68,6 +69,36 @@ class GeneralLexer(object):
     def __init__(self, alphabet, base):
         self.alphabet = alphabet
         self.base = base
+        print(self.graph)
+
+    @property
+    def graph(self):
+        """Creates the alphabet graph"""
+        import networkx
+        result = networkx.DiGraph()
+        current_alphabet = self.alphabet
+        if isinstance(current_alphabet, (GrammarCollection,)):
+            pending_stack = current_alphabet
+        else:
+            pending_stack = [current_alphabet]
+        while pending_stack:
+            current_alphabet = pending_stack.pop()
+            if (isinstance(current_alphabet, Encoding) and current_alphabet == self.base) or \
+                    (isinstance(current_alphabet, GrammarCollection) and current_alphabet in self.base):
+                continue
+            if isinstance(current_alphabet, (GrammarCollection,)):
+                for element in current_alphabet:
+                    result.add_edge(element, element.alphabet)
+                    pending_stack.append(element.alphabet)
+            else:
+                result.add_edge(current_alphabet, current_alphabet.alphabet)
+                pending_stack.append(current_alphabet.alphabet)
+        import matplotlib.pyplot as plt
+        plt.figure(figsize=(8,8))
+        # with nodes colored by degree sized by population
+        networkx.draw(result, with_labels=True)
+        plt.savefig("knuth_miles.png")
+        return result
 
     def __call__(self, data, include_gd=False):
         if include_gd:
@@ -196,7 +227,6 @@ class ChoiceBruteForceLexer(object):
 
 
 def lexer_factory(alphabet, base = None):
-    from pydsl.Grammar.Alphabet import Choice, GrammarCollection
     if isinstance(alphabet, Choice) and alphabet.alphabet == base:
         return ChoiceBruteForceLexer(alphabet)
     elif isinstance(alphabet, Encoding):
