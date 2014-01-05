@@ -33,12 +33,6 @@ class Alphabet(object):
     def maxsize(self):
         return 1
 
-
-class AlphabetChain(Alphabet, list):
-    def __init__(self, alphabet_list):
-        list.__init__(self, alphabet_list)
-        Alphabet.__init__(self)
-
 class GrammarCollection(Alphabet, list):
     """Uses a list of grammar definitions"""
     def __init__(self, grammarlist):

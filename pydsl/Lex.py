@@ -196,7 +196,7 @@ class ChoiceBruteForceLexer(object):
 
 
 def lexer_factory(alphabet, base = None):
-    from pydsl.Grammar.Alphabet import Choice, AlphabetChain, GrammarCollection
+    from pydsl.Grammar.Alphabet import Choice, GrammarCollection
     if isinstance(alphabet, Choice) and alphabet.alphabet == base:
         return ChoiceBruteForceLexer(alphabet)
     elif isinstance(alphabet, Encoding):
