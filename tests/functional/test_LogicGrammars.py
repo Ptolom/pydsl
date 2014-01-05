@@ -12,6 +12,7 @@ from pydsl.File.BNF import load_bnf_file
 from pydsl.Lex import lex
 from pydsl.Grammar import RegularExpression
 from pydsl.Grammar.Alphabet import Encoding
+ascii_encoding = Encoding("ascii")
 
 
 class TestLogicGrammars(unittest.TestCase):
@@ -23,7 +24,7 @@ class TestLogicGrammars(unittest.TestCase):
         repository = {'TrueFalse':load_bnf_file("pydsl/contrib/grammar/TrueFalse.bnf")}
         productionrulesetlogical = load_bnf_file("pydsl/contrib/grammar/LogicalExpression.bnf", repository)
         parser = BacktracingErrorRecursiveDescentParser(productionrulesetlogical)
-        tokens = [x[0] for x in lex(repository['TrueFalse'].alphabet, self.tokelist5)]
+        tokens = [x[0] for x in lex(repository['TrueFalse'].alphabet, ascii_encoding, self.tokelist5)]
         from pydsl.Lex import common_ancestor
         self.assertEqual(common_ancestor(productionrulesetlogical.alphabet), Encoding('ascii'))
         tokens = [x[0] for x in lex(productionrulesetlogical.alphabet, tokens)]
@@ -33,7 +34,7 @@ class TestLogicGrammars(unittest.TestCase):
     def testTrueFalse(self):
         productionrulesetlogical = load_bnf_file("pydsl/contrib/grammar/TrueFalse.bnf")
         parser = BacktracingErrorRecursiveDescentParser(productionrulesetlogical)
-        tokens = [x[0] for x in lex(productionrulesetlogical.alphabet, self.tokelist5)]
+        tokens = [x[0] for x in lex(productionrulesetlogical.alphabet, ascii_encoding, self.tokelist5)]
         result = parser.get_trees(tokens)
         self.assertTrue(result)
 
@@ -41,7 +42,7 @@ class TestLogicGrammars(unittest.TestCase):
         repository = {'TrueFalse':load_bnf_file("pydsl/contrib/grammar/TrueFalse.bnf")}
         productionrulesetlogical = load_bnf_file("pydsl/contrib/grammar/LogicalExpression.bnf", repository)
         parser = BacktracingErrorRecursiveDescentParser(productionrulesetlogical)
-        tokens = [x[0] for x in lex(productionrulesetlogical.alphabet, "True&&False")]
+        tokens = [x[0] for x in lex(productionrulesetlogical.alphabet, ascii_encoding, "True&&False")]
         result = parser.get_trees(tokens)
         self.assertTrue(result)
         result = parser.get_trees("True&|False")
@@ -54,7 +55,6 @@ class TestHTMLGrammars(unittest.TestCase):
         repository = {'integer':RegularExpression("^[0123456789]*$")}
         productionrulesetlogical = load_bnf_file("pydsl/contrib/grammar/TrueHTMLTable.bnf", repository)
         parser = BacktracingErrorRecursiveDescentParser(productionrulesetlogical)
-        ascii_encoding = Encoding("ascii")
         lexed = [x[0] for x in lex(productionrulesetlogical.alphabet, ascii_encoding, "<table><tr><td>1</td></tr></table>")]
         result = parser.get_trees(lexed)
         self.assertTrue(result)
@@ -72,7 +72,6 @@ class TestLogGrammar(unittest.TestCase):
         grammar = load_bnf_file("pydsl/contrib/grammar/logline.bnf", repository)
         checker = checker_factory(grammar)
         original_string = "1.2.3.4 - - [1/1/2003:11:11:11 +2] \"GET\" 1 1 \"referer\" \"useragent\""
-        from pydsl.Lex import lex
-        tokenized = [x[0] for x in lex(grammar.alphabet, original_string)]
+        tokenized = [x[0] for x in lex(grammar.alphabet, ascii_encoding, original_string)]
         self.assertTrue(checker.check(tokenized))
         self.assertFalse(checker.check("1.2.3.4 - - [1/1/2003:11:11:11 +2] \"GOT\" 1 1 \"referer\" \"useragent\""))
