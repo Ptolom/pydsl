@@ -199,7 +199,6 @@ def lexer_factory(alphabet, base = None):
 def lex(alphabet, base, data):
     return lexer_factory(alphabet, base)(data)
 
-
 def common_ancestor(alphabet):
     """Discovers the alphabet common to every element in the input"""
     expanded_alphabet_list = []
@@ -223,3 +222,11 @@ def common_ancestor(alphabet):
         raise NotImplementedError
     return common_alphabets[0]
 
+def is_ancestor(parent_alphabet, child_alphabet):
+    """Tests if parent_alphabet is an ancestor of the child_alphabet"""
+    alphabet = parent_alphabet
+    while alphabet:
+        if child_alphabet == alphabet:
+            return True
+        alphabet = alphabet.alphabet
+    return False
