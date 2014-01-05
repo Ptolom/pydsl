@@ -18,7 +18,7 @@
 """Base Lexer classes"""
 
 __author__ = "Nestor Arocha"
-__copyright__ = "Copyright 2008-2013, Nestor Arocha"
+__copyright__ = "Copyright 2008-2014, Nestor Arocha"
 __email__ = "nesaro@gmail.com"
 
 from pydsl.Grammar.Alphabet import Encoding
@@ -41,13 +41,33 @@ class EncodingLexer(object):
         buffer = ""
         while True:
             element = (yield)
-            buffer += element  # Asumes string
+            buffer += element
             for x in buffer:
                 target.send(x)
 
+#Create a graph that connects the base with the target through alphabets
+#If every target is connected to any inputs, create the independent paths
+
+#A1 A2
+#|  |
+#A3 A4
+#|  |
+#A5 |
+#\  /
+# A6
+
+#Order is not always unique, as in the previous example A4 could be extracter after or before A3. At the moment the algorithm is to compute elements of the longest path first (extract elements from longest path every single time)
+
+
+#Check that every element in the input belongs to base
+
+#Call the lexers following the graph
+
 class GeneralLexer(object):
+    """Multi level lexer"""
     def __init__(self, alphabet, base):
-        self.alphabetchain = alphabetchain
+        self.alphabet = alphabet
+        self.base = base
 
     def __call__(self, data, include_gd=False):
         if include_gd:
@@ -175,14 +195,6 @@ class ChoiceBruteForceLexer(object):
                         target.send(currentstr)
 
 
-class GrammarCollectionLexer(object):
-    def __init__(self, alphabet):
-        self.alphabet = alphabet
-
-    @property
-    def base_alphabet(self):
-        return common_ancestor(self.alphabet)
-
 def lexer_factory(alphabet, base = None):
     from pydsl.Grammar.Alphabet import Choice, AlphabetChain, GrammarCollection
     if isinstance(alphabet, Choice) and alphabet.alphabet == base:
@@ -191,8 +203,6 @@ def lexer_factory(alphabet, base = None):
         if base is not None:
             raise ValueError
         return EncodingLexer(alphabet)
-    elif isinstance(alphabet, GrammarCollection) and base == common_ancestor(alphabet):
-        return GrammarCollectionLexer(alphabet)
     else:
         return GeneralLexer(alphabet, base)
 
