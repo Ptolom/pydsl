@@ -67,9 +67,10 @@ class EncodingLexer(object):
 class GeneralLexer(object):
     """Multi level lexer"""
     def __init__(self, alphabet, base):
+        if not alphabet:
+            raise ValueError
         self.alphabet = alphabet
         self.base = base
-        print(self.graph)
 
     @property
     def graph(self):
@@ -78,7 +79,7 @@ class GeneralLexer(object):
         result = networkx.DiGraph()
         current_alphabet = self.alphabet
         if isinstance(current_alphabet, (GrammarCollection,)):
-            pending_stack = current_alphabet
+            pending_stack = list(current_alphabet)
         else:
             pending_stack = [current_alphabet]
         while pending_stack:
@@ -93,14 +94,20 @@ class GeneralLexer(object):
             else:
                 result.add_edge(current_alphabet, current_alphabet.alphabet)
                 pending_stack.append(current_alphabet.alphabet)
-        import matplotlib.pyplot as plt
-        plt.figure(figsize=(8,8))
-        # with nodes colored by degree sized by population
-        networkx.draw(result, with_labels=True)
-        plt.savefig("knuth_miles.png")
+        #import matplotlib.pyplot as plt
+        #plt.figure(figsize=(8,8))
+        ## with nodes colored by degree sized by population
+        #networkx.draw(result, with_labels=True)
+        #plt.savefig("knuth_miles.png")
         return result
 
     def __call__(self, data, include_gd=False):
+        for element in data:
+            from pydsl.Check import check
+            if not check(self.base, data):
+                raise ValueError('Unexpected input grammar')
+        graph = self.graph
+        solved_elements = {}
         if include_gd:
             for alphabet in self.alphabetchain:
                 lexer = lexer_factory(alphabet)
@@ -108,10 +115,23 @@ class GeneralLexer(object):
                 data, grammars = zip(*response)
             return zip(data, grammars)
         else:
+            if isinstance(self.base, Encoding):
+                self.graph.node[self.base]['data'] = data #Attach data to every element in the graph
+                print(self.graph.predecessors(self.base))
+                print(data)
+            for element in self.alphabet: #FIXME: could be encoding
+                print(self.graph.successors(element))
+
             for alphabet in self.alphabetchain:
                 lexer = lexer_factory(alphabet)
                 data = lexer(data, include_gd = False)
             return data
+
+def digraph_walker_backwards(graph, element, call_back):
+    """Visits every element guaranteeing that the previous elements have been visited before"""
+    call_back(graph, element)
+    for predecessor in graph.predecessor(element):
+        digraph_walker_backwards(graph, predecessor, call_back)
 
 
 
