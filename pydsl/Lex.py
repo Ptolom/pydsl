@@ -127,10 +127,31 @@ class GeneralLexer(object):
                 data = lexer(data, include_gd = False)
             return data
 
+
+def my_call_back(graph, element):
+    gne = graph.nodes[element]
+    if 'parsed' in gne:
+        return  # Already parsed
+    flat_list = []
+    for sucessor in graph.successors(element):
+        for string, gd, left, right in sucessor['parsed']:
+            flat_list.append((string, gd, left, right))
+    sorted_flat_list = sorted(flat_list, key=lambda x: x[2]) #Orders elements from all sucessors
+    lexed_list = []
+    prev_right = 0
+    for string, gd, left, right:
+        if prev_right != left:
+            raise Exception("Non contiguous parsing from sucessors")
+        prev_right = right
+        lexed_list.append(string, gd)
+    gne['parsed'] = extract(element, lexed_list)
+
+
+
 def digraph_walker_backwards(graph, element, call_back):
     """Visits every element guaranteeing that the previous elements have been visited before"""
     call_back(graph, element)
-    for predecessor in graph.predecessor(element):
+    for predecessor in graph.predecessors(element):
         digraph_walker_backwards(graph, predecessor, call_back)
 
 
