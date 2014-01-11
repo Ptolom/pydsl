@@ -20,7 +20,7 @@ __copyright__ = "Copyright 2008-2013, Nestor Arocha"
 __email__ = "nesaro@gmail.com"
 
 import unittest
-from pydsl.Extract import extract
+from pydsl.Extract import extract, extract_alphabet
 from pydsl.Grammar import RegularExpression, String
 from pydsl.Grammar.Alphabet import Encoding, Choice
 
@@ -45,8 +45,8 @@ class TestAlphabetExtract(unittest.TestCase):
 
     def testChoices(self):
         gd = Choice([String('a'), String('b'), String('c')])
-        self.assertListEqual(extract(gd,'axbycz'), [(0,1,'a'), (2,3, 'b'), (4,5,'c')])
-        self.assertListEqual(extract(gd,'xyzabcxyz'), [(3,6,'abc')])
-        self.assertListEqual(extract(gd,'abcxyz'), [(0,3,'abc')])
-        self.assertListEqual(extract(gd,'abc'), [(0,3,'abc')])
-        self.assertListEqual(extract(ad,''), [])
+        self.assertListEqual(extract_alphabet(gd,'axbycz'), [(0,1,'a'), (2,3, 'b'), (4,5,'c')])
+        self.assertListEqual(extract_alphabet(gd,'xyzabcxyz'), [(3,6,'abc')])
+        self.assertListEqual(extract_alphabet(gd,'abcxyz'), [(0,3,'abc')])
+        self.assertListEqual(extract_alphabet(gd,'abc'), [(0,3,'abc')])
+        self.assertListEqual(extract_alphabet(ad,''), [])
