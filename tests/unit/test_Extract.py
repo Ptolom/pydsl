@@ -20,38 +20,33 @@ __copyright__ = "Copyright 2008-2013, Nestor Arocha"
 __email__ = "nesaro@gmail.com"
 
 import unittest
+from pydsl.Extract import extract
+from pydsl.Grammar import RegularExpression, String
+from pydsl.Grammar.Alphabet import Encoding, Choice
 
 
 class TestGrammarExtract(unittest.TestCase):
 
-    def testGrammarDefinition(self):
-        from pydsl.Extract import extract
-        from pydsl.Grammar import RegularExpression
+    def testRegularExpression(self):
         gd = RegularExpression('^[0123456789]*$')
         expected_result = [(3, 4, '1'), (3, 5, '12'), (3, 6, '123'), (3, 7, '1234'), (4, 5, '2'), (4, 6, '23'), (4, 7, '234'), (5, 6, '3'), (5, 7, '34'), (6, 7, '4')]
         self.assertListEqual(extract(gd,'abc1234abc'), expected_result)
         self.assertRaises(Exception, extract, None)
-
-    def testListInput(self):
-        pass
-
-    def testEmptyInput(self):
-        pass
+        self.assertListEqual(extract(gd,''), []) #Empty input
 
 
 class TestAlphabetExtract(unittest.TestCase):
 
-    def testAlphabet(self):
-        from pydsl.Extract import extract
-        from pydsl.Grammar.Alphabet import Encoding
+    def testEncoding(self):
         ad = Encoding('ascii')
         self.assertListEqual(extract(ad,'a£'), [(0,1,'a')])
+        self.assertListEqual(extract(ad,''), [])
         self.assertRaises(Exception, extract, None)
 
-    def testListInput(self):
-        pass
-
-    def testEmptyInput(self):
-        pass
-
-
+    def testChoices(self):
+        gd = Choice([String('a'), String('b'), String('c')])
+        self.assertListEqual(extract(gd,'axbycz'), [(0,1,'a'), (2,3, 'b'), (4,5,'c')])
+        self.assertListEqual(extract(gd,'xyzabcxyz'), [(3,6,'abc')])
+        self.assertListEqual(extract(gd,'abcxyz'), [(0,3,'abc')])
+        self.assertListEqual(extract(gd,'abc'), [(0,3,'abc')])
+        self.assertListEqual(extract(ad,''), [])
