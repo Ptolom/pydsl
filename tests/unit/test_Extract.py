@@ -49,4 +49,4 @@ class TestAlphabetExtract(unittest.TestCase):
         self.assertListEqual(extract_alphabet(gd,'xyzabcxyz'), [(3,6,'abc')])
         self.assertListEqual(extract_alphabet(gd,'abcxyz'), [(0,3,'abc')])
         self.assertListEqual(extract_alphabet(gd,'abc'), [(0,3,'abc')])
-        self.assertListEqual(extract_alphabet(ad,''), [])
+        self.assertListEqual(extract_alphabet(gd,''), [])

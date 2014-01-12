@@ -43,7 +43,7 @@ def filter_subsets(lst):
 
 def extract_alphabet(alphabet, inputdata, fixed_start = False):
     """Extract every slice of the input data that belongs to the Grammar Definition"""
-    lexer = lexer_factory(alphabet)
+    lexer = lexer_factory(alphabet, alphabet.alphabet)
     totallen = len(inputdata)
     maxl = totallen
     minl = 1
@@ -54,9 +54,12 @@ def extract_alphabet(alphabet, inputdata, fixed_start = False):
     result = []
     for i in range(max_start):
         for j in range(i+minl, min(i+maxl, totallen) + 1):
-            lexed = lexer.lex(inputdata[i:j])
-            if lexed:
-                result.append((i,j, inputdata[i:j]))
+            try:
+                lexed = lexer(inputdata[i:j])
+                if lexed:
+                    result.append((i,j, inputdata[i:j]))
+            except:
+                continue
     result = filter_subsets(result)
     return result
 
